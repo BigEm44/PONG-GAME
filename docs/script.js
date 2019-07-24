@@ -33,7 +33,7 @@ const player = {
     x: 0,
     y: cvs.h/2 -50,
     w: 10,
-    h: 100
+    h: 100,
 }
 
 const com = {
@@ -86,8 +86,16 @@ const update = () => {
         ball.velocityX = -ball.velocityX
     }
 
-
 }
+
+// control the paddel
+let canvasPosition = canvas.getBoundingClientRect();
+
+canvas.addEventListener("mousemove",(e)=>{
+
+   player.y = e.clientY - canvasPosition.top - player.h/2
+
+})
 
 
 let game = () => {
