@@ -26,18 +26,27 @@ class Rect {
   }
 }
 
+const drawScore = (color,text,x,y) => {
+  ctx.fillStyle = color;
+  ctx.font = "35px Arial, sans-serif";
+  ctx.fillText(text,x,y);
+}
+
+
 const player = {
   x: 0,
   y: cvs.h / 2 - 50,
   w: 10,
-  h: 100
+  h: 100,
+  score: 0
 };
 
 const com = {
   x: cvs.w - 10,
   y: cvs.h / 2 - 50,
   w: 10,
-  h: 100
+  h: 100,
+  score: 0
 };
 
 const ball = {
@@ -50,10 +59,16 @@ const ball = {
   speed: 4
 };
 
+
+
 //render game elements on the canvas
 const render = () => {
   //draw the canvas background
   new Rect(0, 0, cvs.w, cvs.h, "black");
+  
+  //drawText
+  drawScore("white",player.score,cvs.w/4,cvs.h/5);
+  drawScore("white",com.score,3*cvs.w/4,cvs.h/5);
 
   //draw player padlle
   new Rect(player.x, player.y, player.w, player.h, "white");
@@ -67,6 +82,7 @@ const render = () => {
   //draw net
   const net = new Rect(cvs.w / 2 - 1, 0, 2, 10, "white");
   net.drawNet();
+
 };
 
 // paddel control
@@ -93,6 +109,15 @@ function collision(b, p){
         b.right > p.left && b.bottom > p.top && b.left < p.right && b.top < p.bottom
           )
   };
+
+  //reset the Ball
+const resetBall = () => {
+  ball.x = (cvs.w / 2) - 8;
+  ball.y =  cvs.h / 2;
+
+  ball.speed = 4,
+  ball.velocityX = -ball.velocityX
+}
 
 //game logic and action
 const update = () => {
@@ -125,20 +150,26 @@ const update = () => {
     ball.velocityX = direction * ball.speed * Math.cos(angleRadian)
     ball.velocityY = ball.speed * Math.sin(angleRadian)
 
-    ball.speed += 0.2
+    ball.speed += 0.3
   }
-
+ 
+  //update score
+  if(ball.x < 0){
+    com.score++
+    resetBall()
+  }else if (ball.x > cvs.w){
+    player.score++
+    resetBall()
+ }
 
 };
 
+ 
 
-
-
-
-let game = () => {
+const game = () => {
   render();
   update();
 };
 
-let fps = 50;
+const fps = 50;
 setInterval(game, 1000 / fps);
